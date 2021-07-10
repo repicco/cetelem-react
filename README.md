@@ -10,27 +10,22 @@ Término: 12/07/2021
 
 Inicialização do projeto:
 
-````bash
+```bash
   npm install
-  yar
+  yarn install
+```
 
 Bibliotecas utilizadas:
 
 ```bash
     Styled Components
     React-Icons
-````
-
-n install
-
 ```
 
 ## Tasks Implementadas
 
 - Layout ok
-
 - Movimentação Redux: Listar, Criar, Editar e Excluir
-
 - Modal confirmação cadastro/update/exclusão
 - Alerta campos faltantes e inválidos
 - ValidarCEP
@@ -41,4 +36,3 @@ n install
 - Favicon
 - Movimentações na LocalStorage
 - Paginação
-```
