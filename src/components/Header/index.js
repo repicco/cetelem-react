@@ -31,9 +31,9 @@ const Header = () => (
           <AiOutlineSearch />
         </div>
         <div className="clientArea">
-          <label for="cpf">
+           <label>
             ÁREA DO CLIENTE
-            <input type="text" placeholder="Digite seu CPF" />
+            <input type="text" id="cpf" placeholder="Digite seu CPF" />
           </label>
           <button>ACESSAR</button>
         </div>

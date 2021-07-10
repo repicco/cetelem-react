@@ -166,4 +166,7 @@ export const StyleRegisterContent = styled.div`
       }
     }
   }
+  #number {
+    width: 100px
+  }
 `
