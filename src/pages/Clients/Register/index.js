@@ -24,6 +24,8 @@ const Register = ({newUser, handleRegister}) => {
             city: 'dadsa',
             state: 'dasda',
         }
+    } else {
+
     }
     
     const [ form, setForm ] = useState(startForm)
@@ -66,10 +68,6 @@ const Register = ({newUser, handleRegister}) => {
         } else {
             alert('*Favor preencher todos os campos obrigatórios')
         }
-    }
-
-    function clearForm(){
-        setForm(startForm)
     }
 
     if(newUser !== null ){
@@ -139,7 +137,7 @@ const Register = ({newUser, handleRegister}) => {
                             </label>
                         </form>
                         <div>
-                            <button onClick={clearForm} onClick={() => handleRegister(null)} >
+                            <button onClick={() => handleRegister(null)} >
                                 <FiXCircle className="icon"/>
                                 Cancelar
                             </button>
