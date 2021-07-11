@@ -1,13 +1,13 @@
-export function handleClient(payload){
+export function createClient(payload){
     return{
-        type: 'HANDLE_CLIENT',
+        type: 'CREATE_CLIENT',
         payload,
     }
 }
 
-export function deleteClient(payload){
+export function handleClient(payload){
     return{
-        type: 'DELETE_CLIENT',
+        type: 'HANDLE_CLIENT',
         payload,
     }
 }

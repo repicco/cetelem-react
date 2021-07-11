@@ -1,34 +1,46 @@
-import { StyleMainCard, StyleRegisterContent} from '../style'
-import { FiEdit, FiXCircle, FiPlusCircle } from "react-icons/fi";
-import { useState } from 'react';
-
-import { handleClient } from '../../../store/actions'
+import { useState, useEffect } from 'react';
 import { useDispatch,useSelector } from 'react-redux'
+import { createClient, handleClient } from '../../../store/actions'
+
+import { StyleMainCard, StyleRegisterContent} from '../style'
+import styled  from 'styled-components'
+import { FiEdit, FiXCircle, FiPlusCircle } from "react-icons/fi";
 import { ImUserPlus } from "react-icons/im";
 
-const Register = ({newUser, handleRegister}) => {
+import Modal from '../../../components/Modal';
+
+const Register = ({newUser, handleRegister, client}) => {
     const dispatch = useDispatch()
     const store = useSelector(state => state.cetelem.clients)
+    const [modalVisible, setModalVisible] = useState()
 
-    let startForm = {}
-    if(newUser) {
-        startForm = {
-            name: 'Renato',
-            lastName: 'Picco',
-            age: '34',
-            cep: '05176080',
-            road: 'Teste',
-            number: '34554',
+    const [ form, setForm ] = useState({
+        name: '',
+        lastName: '',
+        age: '',
+        cep: '',
+        road: '',
+        number: '',
+        complement: '',
+        district: '',
+        city: '',
+        state: '',
+    })
+
+    useEffect(() => {
+        newUser ? setForm({
+            name: '',
+            lastName: '',
+            age: '',
+            cep: '',
+            road: '',
+            number: '',
             complement: '',
-            district: 'sdsa',
-            city: 'dadsa',
-            state: 'dasda',
-        }
-    } else {
-
-    }
-    
-    const [ form, setForm ] = useState(startForm)
+            district: '',
+            city: '',
+            state: '',
+        }) : setForm(client)
+    }, [newUser, client])
 
     function requiredValidate(){
         let check = true
@@ -46,31 +58,42 @@ const Register = ({newUser, handleRegister}) => {
         let duplicated = []
         const arrPayload = [payload]
         store.forEach(el => {
-            duplicated = arrPayload.filter(item => item === el)
+            duplicated = arrPayload.filter(item => item.name === el.name && item.lastName === el.lastName && item.cep === el.cep && item.number === el.number)
         })
+        const newPayload = {...payload, id: store.length + 1}
         if(duplicated.length === 0){
-            return payload
+            return newPayload
         } else {
             alert('Duplicado')
             return false
         }
     }
-    
 
-    async function submit(){
+    function payloadModal(){
         const isValid = requiredValidate()
         if(isValid) {
-            const payload = (checkDuplicated(store, form))
-            if(payload){
-                await dispatch(handleClient(payload))
-            }
-            console.log('register',store)
+            setModalVisible(true)
         } else {
             alert('*Favor preencher todos os campos obrigatórios')
         }
     }
+    
+    async function submit(){
+        if(newUser) {
+            const payload = (checkDuplicated(store, form))
+            if(payload){
+                await dispatch(createClient(payload))
+            }
+        } else {
+            const payload = store.map(item => {
+                return item === client ? form : item
+            })
+            dispatch(handleClient(payload))
+        }
+        setModalVisible(false)
+    }
 
-    if(newUser !== null ){
+    if(newUser !== null && form !== undefined){
         return (
             <>
                 <StyleMainCard>
@@ -94,7 +117,7 @@ const Register = ({newUser, handleRegister}) => {
                         </div>
                     </div>
                     <StyleRegisterContent>
-                        <form>
+                        <form>                           
                             <label>
                                 *Nome:
                                 <input type="text" id="name" value={form.name} onInput={el => setForm( {...form, name: el.target.value} )}/>
@@ -141,12 +164,37 @@ const Register = ({newUser, handleRegister}) => {
                                 <FiXCircle className="icon"/>
                                 Cancelar
                             </button>
-                            <button onClick={submit}>
+                            <button onClick={payloadModal}>
                                 <FiPlusCircle className="icon"/>
                                 Salvar
                             </button>
                         </div>
                     </StyleRegisterContent>
+                    <Modal visible={modalVisible} setVisible={setModalVisible} title={newUser ? 'Criar cliente' : 'Atualizar cliente'} >
+                        <StyleRegisterModal>
+                            {
+                                newUser ? <h3>Tem certeza que deseja criar o usuário?</h3> : <h3>Tem certeza que deseja editar o usuário?</h3>
+                            }
+                            <div className="items">
+                                <div>
+                                    <p>Nome: {form.name} {form.lastName}</p>
+                                    <p>Idade: {form.age} anos</p>
+                                </div>
+                                <div>
+                                    <p>CEP: {form.cep}</p>
+                                </div>
+                                <div>
+                                    
+                                    <p>Endereço: {form.road}, {form.number}, {form.complement} - </p>
+                                    <p>{form.district} / {form.city} - {form.state}</p>
+                                </div> 
+                            </div>
+                            <div className="buttons">
+                                <button onClick={() => setModalVisible(false)}>Cancelar</button>
+                                <button onClick={submit}>Criar</button>
+                            </div>
+                        </StyleRegisterModal>
+                    </Modal>
                 </StyleMainCard>
             </>
         )
@@ -161,3 +209,56 @@ const Register = ({newUser, handleRegister}) => {
 }
 
 export default Register
+
+
+
+
+const StyleRegisterModal = styled.div`
+    display: flex;
+    flex-direction: column;
+    h3 {
+        margin-top: 1rem;
+    }
+    .items {
+        div {
+            display: flex;
+            font-size: 1.1rem;
+            p {
+                padding: 0.5rem;
+            }
+        }
+    }
+    .buttons {
+        margin-top: 1rem;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        button {
+            margin: 0 1rem;
+            font-size: 1.3rem;
+            padding: 0.25rem 0.5rem;
+            cursor: pointer;
+            background: #a0be5b;
+            color: #fff;
+            border: 1px solid #a0be5b;
+            border-radius: 4px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            .icon {
+                margin-right: 0.5rem;
+            }
+            &:hover {
+                color: #a0be5b;
+                background: #ddd;
+            }
+            &:first-child {
+                color: #a0be5b;
+                background: #fff;
+                &:hover {
+                background: #ddd;
+                }
+            }
+        }
+    }
+`

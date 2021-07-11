@@ -8,7 +8,7 @@ Término: 12/07/2021
 
 ## Lógicas implementadas
 
-Criação do usuário: Validado se todos os campos requeridos estão preenchidos, verificamos se o item não possue ao menos 1 dado diferente, não permitindo duplicados.
+Criação do usuário: Validado se todos os campos requeridos estão preenchidos, verificamos se os item não possuem nome, sobrenome, cep e numero duplicados para travar o cadastro.
 
 Listagem: Captura a lista do store do Redux e renderizada no card dentro de Lista Clientes.
 
@@ -37,11 +37,11 @@ Bibliotecas utilizadas:
 ## Itens Implementados
 
 - Layout - ok
-- Movimentação Redux: Listar, Criar, Editar e Excluir -
-- Modal confirmação cadastro/update/exclusão
 - Alerta campos faltantes e inválidos - ok
-- Alerta personalizado
-- Favicon
+- Movimentação Redux: Listar, Criar, Editar e Excluir - ok
+- Modal confirmação cadastro/update/exclusão - ok
+- Favicon - ok
+- Alerta personalizado: campos e alerta de tela -
 - ValidarCEP
 - BuscaCEP
 - Funcionalidade Buscar

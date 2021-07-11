@@ -2,6 +2,7 @@ import { combineReducers } from "redux";
 
 const initialState = {
     clients: [{
+        id: 1,
         name: 'Renato',
         lastName: 'Picco',
         age: '34',
@@ -17,9 +18,9 @@ const initialState = {
 
 const cetelem = (state = initialState, action) => {
     switch(action.type){
-        case 'HANDLE_CLIENT':
+        case 'CREATE_CLIENT':
             return {clients: [...state.clients, action.payload] }
-        case 'DELETE_CLIENT':
+        case 'HANDLE_CLIENT':
             return {clients: action.payload}
         default:
             return state
