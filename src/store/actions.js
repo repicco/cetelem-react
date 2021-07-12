@@ -11,3 +11,17 @@ export function handleClient(payload){
         payload,
     }
 }
+
+export function createClientOriginal(payload){
+    return{
+        type: 'CREATE_CLIENT_ORIGINAL',
+        payload,
+    }
+}
+
+export function handleClientOriginal(payload){
+    return{
+        type: 'HANDLE_CLIENT_ORIGINAL',
+        payload,
+    }
+}

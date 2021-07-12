@@ -1,19 +1,20 @@
 import styled from 'styled-components'
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 export default function Modal({visible, setVisible, title, children}){
     const [handleModal, setHandleModal] = useState(false)
+
+    const changeModal = useCallback((change) => {
+        setHandleModal(change)
+        if(!change){
+            setVisible(change)
+        }
+    }, [setHandleModal, setVisible])
 
     useEffect(() => {
         changeModal(visible)
     }, [visible, changeModal])
 
-    function changeModal(change){
-        setHandleModal(change)
-        if(!change){
-            setVisible(change)
-        }
-    }
 
     if(handleModal) {
         return(
@@ -21,7 +22,6 @@ export default function Modal({visible, setVisible, title, children}){
                 <div className="backModal" onClick={() => changeModal(false)}></div>
                 <section>
                     <div className="modalTitle">
-                        {/* <GiBus className="icon" /> */}
                         <h2>{title}</h2>
                     </div>
                         {children}
@@ -65,8 +65,8 @@ const StyleModal = styled.div`
         padding: 1rem;
         box-shadow: 0 2px 2px rgba(0, 0, 0, 0.7);
         overflow-y: auto;
-        height: 94%;
-        width: 80%;
+        height: fit-content;
+        width: 90%;
         .modalTitle {
             display: flex;
             flex-direction: column;

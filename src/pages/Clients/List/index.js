@@ -1,19 +1,22 @@
 import { useState } from 'react';
-import { handleClient } from '../../../store/actions'
+import { handleClient, handleClientOriginal } from '../../../store/actions'
 import { useSelector, useDispatch } from 'react-redux'
 
 import styled from 'styled-components'
 import { StyleMainCard, StyleListContent } from '../style'
 import { AiOutlineUnorderedList, AiFillDelete } from "react-icons/ai";
 import { FiEdit } from "react-icons/fi";
+import { CgGhostCharacter } from "react-icons/cg";
 
 import Modal from '../../../components/Modal';
+import Alert from '../../../components/Alert'
 
 const List = ({handleRegister, handleFilterClient}) => {
     const dispatch = useDispatch()
     const clients = useSelector(state => state.cetelem.clients)
     const [modalVisible, setModalVisible] = useState()
     const [clientItem, setClientItem] = useState()
+    const [alert, setAlert] = useState({visible: false, message: 'Campo Errado'})
 
     function changeItem(check, value){
         handleRegister(check)
@@ -28,7 +31,9 @@ const List = ({handleRegister, handleFilterClient}) => {
     function removeItem(){
         const payload = clients.filter(item => item !== clientItem)
         dispatch(handleClient(payload))
+        dispatch(handleClientOriginal(payload))
         setModalVisible(false)
+        setAlert({visible: true, message: 'Cliente deletado', type: 'success'})
     }
 
     if(clients?.length > 0 || clients !== undefined){
@@ -43,29 +48,40 @@ const List = ({handleRegister, handleFilterClient}) => {
                         <button onClick={() => changeItem(true)}>Novo Cliente</button>
                     </div>
                     <StyleListContent>
-                        <div className="tableTitle">
-                            <p>Nome</p>
-                            <p>Sobrenome</p>
-                            <p>Idade</p>
-                            <p>Estado</p>
-                            <p>Cidade</p>
-                            <p>Ações</p>
-                        </div>
-                        {
-                            clients.map((client, index) => (
-                                <div className="tableBody" key={index}>
-                                    <p>{client.name}</p>
-                                    <p>{client.lastName}</p>
-                                    <p>{client.age}</p>
-                                    <p>{client.city}</p>
-                                    <p>{client.state}</p>
-                                    <div>
-                                        <FiEdit className="icon" onClick={() => changeItem(false, client)}/>
-                                        <AiFillDelete className="icon" onClick={() => deleteModal(client)} />
-                                    </div>
-                                </div>       
-                            ))
-                        }
+                    {
+                        clients.length > 0 ?
+                            <>
+                            <div className="tableTitle">
+                                <p>Nome</p>
+                                <p>Sobrenome</p>
+                                <p>Idade</p>
+                                <p>Estado</p>
+                                <p>Cidade</p>
+                                <p>Ações</p>
+                            </div>
+                            {
+                                clients.map((client, index) => (
+                                    <div className="tableBody" key={index}>
+                                        <p>{client.name}</p>
+                                        <p>{client.lastName}</p>
+                                        <p>{client.age} anos</p>
+                                        <p>{client.city}</p>
+                                        <p>{client.state}</p>
+                                        <div>
+                                            <FiEdit className="icon" onClick={() => changeItem(false, client)}/>
+                                            <AiFillDelete className="icon" onClick={() => deleteModal(client)} />
+                                        </div>
+                                    </div>       
+                                ))
+                            }
+                            </>
+                        :
+                            <div className="noClient">
+                              <p>Sem clientes no momento...</p>
+                                <CgGhostCharacter className="icon" />
+                              <p>Favor cadastrar assim que possivel através do botão "Novo Cliente"</p>
+                            </div>
+                    }
                     </StyleListContent>
                     <Modal visible={modalVisible} setVisible={setModalVisible} title={'Excluir cliente'} >
                         <StyleDeleteModal>
@@ -82,7 +98,7 @@ const List = ({handleRegister, handleFilterClient}) => {
                                         <p>CEP: {clientItem.cep}</p>
                                     </div>
                                     <div>
-                                        <p>Endereço: {clientItem.road}, {clientItem.number}, {clientItem.complement} - </p>
+                                        <p>Endereço: {clientItem.road}, {clientItem.number}, {clientItem.complement}</p>
                                         <p>{clientItem.district} / {clientItem.city} - {clientItem.state}</p>
                                     </div> 
                                 </div>
@@ -95,6 +111,9 @@ const List = ({handleRegister, handleFilterClient}) => {
                             
                         </StyleDeleteModal>
                     </Modal>
+                    <Alert visible={alert.visible} setVisible={setAlert} type={alert.type}>
+                        <p>{alert.message}</p>
+                    </Alert>
                 </StyleMainCard>   
             </>
         )
@@ -118,7 +137,7 @@ const StyleDeleteModal = styled.div`
     .items {
         div {
             display: flex;
-            font-size: 1.1rem;
+            flex-direction: column;
             p {
                 padding: 0.5rem;
             }
@@ -154,6 +173,13 @@ const StyleDeleteModal = styled.div`
                 &:hover {
                 background: #ddd;
                 }
+            }
+        }
+    }
+    @media(min-width: 992px) {
+        .items {
+            div {
+                flex-direction: row;
             }
         }
     }
